@@ -61,7 +61,7 @@ body { margin: 0; background-color: black; color: #727983; height: 100%; }
   (:require [reagent.core :as r]))
 
 (defn root []
-  [:div "hello world"])
+  [:div "Press Esc to reload and save page."])
 
 (r/render [root] (.getElementById js/document "root"))
     </script>
@@ -90,8 +90,16 @@ body { margin: 0; background-color: black; color: #727983; height: 100%; }
           //cljs_iframe_doc.write(document.getElementById("cljs-textarea").innerText);
           cljs_iframe_doc.write(cm.getValue());
           cljs_iframe_doc.close();
+          //location.hash = encodeURI(cm.getValue());
+          localStorage.setItem("cljs-inline", cm.getValue());
         }
       };
+      if(location.hash){
+        editor.setValue(decodeURI(location.hash.substring(1)));
+        location.hash = "";
+      }else if(localStorage.getItem("cljs-inline")){
+        editor.setValue(localStorage.getItem("cljs-inline"));
+      }
       //editor.on("changes", onChange);
       editor.on("keyHandled", onChange);
       onChange(editor, "Esc");
