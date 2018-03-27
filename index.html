@@ -16,6 +16,13 @@ body { margin: 0; }
 ::-webkit-scrollbar-thumb {
   background-color: #0e0e0e;
 }
+.CodeMirror-gutter.CodeMirror-linenumbers, .CodeMirror-gutters {
+  background-color: black !important;
+  border-right: none !important;
+}
+.cm-s-vibrant-ink .CodeMirror-linenumber {
+  color: #424242 !important;
+}
 .CodeMirror-cursor{
   background-color: gray !important;
 }
@@ -35,7 +42,8 @@ iframe {
     </style>
     <link rel="stylesheet" href="node_modules/codemirror/lib/codemirror.css">
     <!--<link rel="stylesheet" href="node_modules/codemirror/theme/zenburn.css">-->
-    <link rel="stylesheet" href="node_modules/codemirror/theme/tomorrow-night-bright.css">
+    <!--<link rel="stylesheet" href="node_modules/codemirror/theme/tomorrow-night-bright.css">-->
+    <link rel="stylesheet" href="node_modules/codemirror/theme/vibrant-ink.css">
     <script src="node_modules/codemirror/lib/codemirror.js"></script>
     <script src="node_modules/codemirror/keymap/vim.js"></script>
     <script src="node_modules/codemirror/mode/clojure/clojure.js"></script>
@@ -73,7 +81,8 @@ body { margin: 0; background-color: black; color: #727983; height: 100%; }
         lineNumbers: true,
         keyMap: "vim",
         //theme: "zenburn",
-        theme: "tomorrow-night-bright",
+        //theme: "tomorrow-night-bright",
+        theme: "vibrant-ink",
         cursorBlinkRate: 0,
         //mode: "htmlmixed",
         mode: {
