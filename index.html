@@ -61,7 +61,7 @@ iframe {
     <textarea id="cljs-textarea">
 <html>
   <head>
-    <script src="cljs_inline.js"></script>
+    <script src="http://unpkg.com/hotreload-cljs/dist/cljs-inline.js"></script>
     <style> 
 body { margin: 0; background-color: black; color: #727983; height: 100%; }
     </style>
@@ -73,7 +73,7 @@ body { margin: 0; background-color: black; color: #727983; height: 100%; }
   (:require [reagent.core :as r]))
 
 (defn root []
-  [:div "Press Esc to reload and save page."])
+  [:div "Hello world"])
 
 (r/render [root] (.getElementById js/document "root"))
     </script>
@@ -96,13 +96,26 @@ body { margin: 0; background-color: black; color: #727983; height: 100%; }
           }
         },
       });
-      onChange = (cm, keyName)=>{
-        if(keyName == "Esc"){
-          let cljs_iframe_doc = document.getElementById("cljs-iframe").contentWindow.document;
+      let cljs_iframe_window = document.getElementById("cljs-iframe").contentWindow;
+      let cljs_iframe_doc = document.getElementById("cljs-iframe").contentWindow.document;
+      let firstLoad = true;
+      onChange = (cm)=>{
+        if(firstLoad){
           cljs_iframe_doc.open("text/html", "replace");
-          //cljs_iframe_doc.write(document.getElementById("cljs-textarea").innerText);
           cljs_iframe_doc.write(cm.getValue());
           cljs_iframe_doc.close();
+          firstLoad = false;
+        }else{
+          let s = document.createElement("html");
+          s.innerHTML = cm.getValue();
+          let sscripts = s.getElementsByTagName("script");
+          for(let i = 0; i < sscripts.length ; i++){
+            if(sscripts[i].type === "text/cljs"){
+              cljs_iframe_window.cljs_inline.client.eval(sscripts[i].textContent);
+            }else if(sscripts[i].type === ""){
+              cljs_iframe_window.eval(sscripts[i].textContent);
+            }
+          }
           //location.hash = encodeURI(cm.getValue());
           localStorage.setItem("cljs-inline", cm.getValue());
         }
@@ -113,9 +126,9 @@ body { margin: 0; background-color: black; color: #727983; height: 100%; }
       }else if(localStorage.getItem("cljs-inline")){
         editor.setValue(localStorage.getItem("cljs-inline"));
       }
-      //editor.on("changes", onChange);
-      editor.on("keyHandled", onChange);
-      onChange(editor, "Esc");
+      editor.on("change", onChange);
+      editor.on("keyHandled", (cm, keyName)=> {if(keyName === "F5") onChange(cm);});
+      onChange(editor);
       editor.focus();
     </script>
   </body>
